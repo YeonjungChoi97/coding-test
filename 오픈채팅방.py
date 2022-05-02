@@ -1,4 +1,5 @@
 #link: https://programmers.co.kr/learn/courses/30/lessons/42888
+#날짜: 5월 2일
 
 def solution(record):
     
