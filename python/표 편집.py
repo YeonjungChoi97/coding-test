@@ -1,5 +1,6 @@
 #very difficult, had to recap on dllist for around 2-3 hrs
 #took ~ 3.5 ish hrs
+#자료구조 so hellish. Recapping on it was a pain
 #link: https://programmers.co.kr/learn/courses/30/lessons/81303
 
 # Create the node class
