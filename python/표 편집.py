@@ -1,68 +1,108 @@
 #link: https://programmers.co.kr/learn/courses/30/lessons/81303
-# 테스트 케이스는 통과하였지만, 제출후 반 이상의 케이스 failed. gotta check up.
+## runtime errors :/ code efficiency apparently 0
 
-def up(l,i,n):
+# Create the node class
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+        self.prev = None
+        
+# Create the doubly linked list class
+class doubly_linked_list:
+    def __init__(self):
+        self.head = None
+
+    def append(self, NewVal):
+        NewNode = Node(NewVal)
+        NewNode.next = None
+        if self.head is None:
+            NewNode.prev = None
+            self.head = NewNode
+            return
+        last = self.head
+        while (last.next is not None):
+            last = last.next
+        last.next = NewNode
+        NewNode.prev = last
+        return
     
-    while n > 0:
-        if l[i] == "O":
-            n -= 1
-            i -= 1
-        else:
-            i -= 1
+    def final(self, node):
+        str_final = ""
+        while (node is not None):
+            
+            str_final = str_final + node.data 
+            last = node
+            node = node.next
+        return str_final
+    
+    
+        
 
     
-    return i
-
-def down(l,i,n):
-    
-    while n > 0:
-        if l[i] == "O":
-            n -= 1
-            i += 1
-        else:
-            i += 1      
-    return i
-
-def c(i_list,index, recent_delete):
-    
-    recent_delete.append(index)
-    i_list[index] = "X"
-    
-    
-    if len(i_list) == (index+1):
-        index -=1
-    else:
-        index += 1     
-    
-    return i_list, index, recent_delete
-
-def undo(i_list, recent_delete):
-    
-    i_list[recent_delete[len(recent_delete)-1]] = "O"
-    recent_delete.pop(len(recent_delete)-1)
-    
-    return i_list, recent_delete
-    
-
-
 def solution(n, k, cmd):
-    i_list =["O"]*n
-    recent_delete = []
-    index = k
+    
+    dlist = doubly_linked_list()
+    first_node = "O"
+    dlist.append(first_node)
+    current_node = first_node
+    deleted_node = []
+    
+    #initialising linked list
+    while n > 1:
+        next_node = "O"
+        dlist.append(next_node)
+        current_node = next_node
+        n -= 1 
+    
+    
+    #place the node to k position
+    current_node = dlist.head
+
+    while k > 0:
+        current_node = current_node.next
+        k -= 1
     
     for i in cmd:
         i = i.split(" ")
+        if i[0] == "U":
+            for i in range(int(i[1])):
+                current_node = current_node.prev
+        elif i[0] == "D":
+            for i in range(int(i[1])):
+                current_node = current_node.next
+        elif i[0] == "C":
+            current_node.data = "X"
+            deleted_node.append(current_node)
 
-        try:
-            if i[0] == "D":
-                index = down(i_list,index, int(i[1]))
-            elif i[0] == "C":
-                i_list, index, recent_delete = c(i_list, index, recent_delete)
-            elif i[0] == "U":
-                index = up(i_list, index, int(i[1]))
+            upper = current_node.prev
+            lower = current_node.next
+            if lower:
+                upper.next = lower
+                lower.prev = upper
+                current_node = lower
             else:
-                i_list, recent_delete = undo(i_list, recent_delete)
-        except:
-            print("error")
-    answer = ''.join(i_list)
+                upper.next = lower
+                current_node = upper
+        else:
+            undo = deleted_node.pop()
+            undo.data = "O"
+            upper = undo.prev
+            lower = undo.next
+            if upper:
+                upper.next = undo
+            if lower:
+                lower.prev = undo
+
+    while len(deleted_node) > 0:
+        undo = deleted_node.pop()
+        upper = undo.prev
+        lower = undo.next
+        upper.next = undo
+        lower.prev = undo
+
+    answer = dlist.final(dlist.head)
+
+    
+    
     return answer
